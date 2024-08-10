@@ -10,34 +10,46 @@ const buttonNext = document.querySelector('.btn-next');
 let searchPokemon = 1;
 
 const fetchPokemon = async (pokemon) => {
-  const APIResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`);
+  const lambdaEndpoint = 'https://q4cbb3pvypaemnhyisiyessjky0ufzei.lambda-url.us-east-2.on.aws'; // Substitua pelo endpoint da sua função Lambda
+  const response = await fetch(lambdaEndpoint, {
+    method: 'POST',
+    body: JSON.stringify({ item: pokemon }), // Envia o nome ou número do Pokémon
+    headers: { 'Content-Type': 'application/json' }
+  });
 
-  if (APIResponse.status === 200) {
-    const data = await APIResponse.json();
+  if (response.status === 200) {
+    const data = await response.json();
     return data;
+  } else {
+    throw new Error('Erro ao buscar dados do Pokémon');
   }
-}
+};
 
 const renderPokemon = async (pokemon) => {
 
   pokemonName.innerHTML = 'Loading...';
   pokemonNumber.innerHTML = '';
 
-  const data = await fetchPokemon(pokemon);
+  try {
+    const data = await fetchPokemon(pokemon);
 
-  if (data) {
-    pokemonImage.style.display = 'block';
-    pokemonName.innerHTML = data.name;
-    pokemonNumber.innerHTML = data.id;
-    pokemonImage.src = data['sprites']['versions']['generation-v']['black-white']['animated']['front_default'];
-    input.value = '';
-    searchPokemon = data.id;
-  } else {
-    pokemonImage.style.display = 'none';
-    pokemonName.innerHTML = 'Not found :c';
-    pokemonNumber.innerHTML = '';
+    if (data) {
+      pokemonImage.style.display = 'block';
+      pokemonName.innerHTML = data.name;
+      pokemonNumber.innerHTML = data.id;
+      pokemonImage.src = data.imageUrl; // Supondo que a função Lambda retorne a URL da imagem
+      input.value = '';
+      searchPokemon = data.id;
+    } else {
+      pokemonImage.style.display = 'none';
+      pokemonName.innerHTML = 'Not found :c';
+      pokemonNumber.innerHTML = '';
+    }
+  } catch (error) {
+    console.error(error);
+    // Exibir mensagem de erro para o usuário
   }
-}
+};
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -56,4 +68,4 @@ buttonNext.addEventListener('click', () => {
   renderPokemon(searchPokemon);
 });
 
-renderPokemon(searchPokemon);
+renderPokemon(searchPokemon); 1 
