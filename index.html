@@ -4,41 +4,62 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Links -->
   <link rel="icon" href="./favicons/favicon-16x16.png">
   <link rel="stylesheet" href="./css/style.css">
 
-  <!-- Main JS -->
   <script defer src="./js/script.js"></script>
 
   <title>Pokédex</title>
 </head>
 <body>
-  
-  <main>
-    <img src="#" alt="pokemon" class="pokemon__image">
 
-    <h1 class="pokemon__data">
-      <span class="pokemon__number"></span> -
-      <span class="pokemon__name"></span>
-    </h1>
+<main>
+  <img src="#" alt="pokemon" class="pokemon__image">
 
-    <form class="form">
-      <input
-        type="search"
-        class="input__search"
-        placeholder="Name or Number"
-        required
-      />
-    </form>
+  <h1 class="pokemon__data">
+    <span class="pokemon__number"></span> -
+    <span class="pokemon__name"></span>
+  </h1>
 
-    <div class="buttons">
-      <button class="button btn-prev">Prev &lt;</button>
-      <button class="button btn-next">Next &gt;</button>
-    </div>
+  <form class="form">
+    <input
+      type="search"
+      class="input__search"
+      placeholder="Name or Number"
+      required
+    />
+    <button type="button" class="button btn-load">Load Pokédex</button>
+  </form>
 
-    <img src="./images/pokedex.png" alt="pokedex" class="pokedex">
-  </main>
+  <div class="buttons">
+    <button class="button btn-prev">Prev &lt;</button>
+    <button class="button btn-next">Next &gt;</button>
+  </div>
+
+  <img src="./images/pokedex.png" alt="pokedex" class="pokedex">
+</main>
+
+<script>
+  // Update your script.js to handle the "Load Pokédex" button click
+  const loadButton = document.querySelector('.btn-load');
+
+  loadButton.addEventListener('click', async () => {
+    const url = 'https://icx2g6bl6wxtn3btx4tryy22jy0pykye.lambda-url.us-east-2.on.aws/';  // Replace with your actual Lambda URL
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      // Handle the response data and update the UI
+      // (implement your logic to display Pokédex data here)
+      console.log('Pokédex data:', data);  // For now, log the data to the console
+
+    } catch (error) {
+      console.error('Error fetching Pokédex data:', error);
+      // Implement error handling (display error message to the user)
+    }
+  });
+</script>
 
 </body>
 </html>
