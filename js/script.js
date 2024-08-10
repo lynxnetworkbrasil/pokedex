@@ -14,7 +14,8 @@ const fetchPokemon = async (pokemon) => {
   const pokemonId = parseInt(pokemon);
   const response = await fetch(lambdaEndpoint, {
     method: 'POST',
-    item: pokemonId, // Envia o nome ou número do Pokémon
+    body: { item: pokemonId }, // Envia o nome ou número do Pokémon
+    // body: JSON.stringify({ item: pokemonId })
     headers: { 'Content-Type': 'application/json' }
   });
 
