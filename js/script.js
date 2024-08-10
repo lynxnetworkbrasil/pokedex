@@ -11,9 +11,10 @@ let searchPokemon = 1;
 
 const fetchPokemon = async (pokemon) => {
   const lambdaEndpoint = 'https://q4cbb3pvypaemnhyisiyessjky0ufzei.lambda-url.us-east-2.on.aws'; // Substitua pelo endpoint da sua função Lambda
+  const pokemonId = parseInt(pokemon);
   const response = await fetch(lambdaEndpoint, {
     method: 'POST',
-    body: JSON.stringify({ item: pokemon }), // Envia o nome ou número do Pokémon
+    body: JSON.stringify({ item: pokemonId }), // Envia o nome ou número do Pokémon
     headers: { 'Content-Type': 'application/json' }
   });
 
