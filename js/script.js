@@ -26,7 +26,7 @@ const fetchPokemon = async (pokemon) => {
       throw new Error('Erro ao buscar dados do Pokémon');
     }
   } catch (error) {
-    console.error(error);
+    console.error('Erro na solicitação:', error);
     return null;
   }
 };
@@ -39,15 +39,19 @@ const renderPokemon = async (pokemon) => {
   const data = await fetchPokemon(pokemon);
 
   if (data) {
-    pokemonName.innerHTML = data.name;
-    pokemonNumber.innerHTML = data.id;
-    pokemonImage.style.display = 'block'; // Exibe a imagem se os dados foram carregados com sucesso
-    pokemonImage.src = data.imageUrl || ''; // Atualize com o URL da imagem retornado pela Lambda
+    // Verifica se todos os campos esperados estão presentes
+    const { name = 'Unknown', id = 'N/A', imageUrl = '' } = data;
+
+    pokemonName.innerHTML = name;
+    pokemonNumber.innerHTML = id;
+    pokemonImage.style.display = imageUrl ? 'block' : 'none'; // Exibe a imagem se imageUrl estiver presente
+    pokemonImage.src = imageUrl;
     input.value = '';
-    searchPokemon = data.id;
+    searchPokemon = id;
   } else {
     pokemonName.innerHTML = 'Not found :c';
     pokemonNumber.innerHTML = '';
+    pokemonImage.style.display = 'none'; // Oculta a imagem se não houver dados
   }
 };
 
