@@ -11,44 +11,43 @@ let searchPokemon = 1;
 
 const fetchPokemon = async (pokemon) => {
   const lambdaEndpoint = 'https://q4cbb3pvypaemnhyisiyessjky0ufzei.lambda-url.us-east-2.on.aws'; // Substitua pelo endpoint da sua função Lambda
-  const pokemonId = parseInt(pokemon);
-  const response = await fetch(lambdaEndpoint, {
-    method: 'POST',
-    body: JSON.stringify({ 'item': pokemonId }),
-    headers: { 'Content-Type': 'application/json' }
-  });
+  const pokemonId = parseInt(pokemon, 10);
+  
+  try {
+    const response = await fetch(lambdaEndpoint, {
+      method: 'POST',
+      body: JSON.stringify({ 'item': pokemonId }),
+      headers: { 'Content-Type': 'application/json' }
+    });
 
-  if (response.status === 200) {
-    const data = await response.json();
-    return data;
-  } else {
-    throw new Error('Erro ao buscar dados do Pokémon');
+    if (!response.ok) {
+      throw new Error('Erro ao buscar dados do Pokémon');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Erro:', error);
+    return null;
   }
 };
 
 const renderPokemon = async (pokemon) => {
-
   pokemonName.innerHTML = 'Loading...';
   pokemonNumber.innerHTML = '';
 
-  try {
-    const data = await fetchPokemon(pokemon);
+  const data = await fetchPokemon(pokemon);
 
-    if (data) {
-      pokemonImage.style.display = 'block';
-      pokemonName.innerHTML = data.name;
-      pokemonNumber.innerHTML = data.id;
-      pokemonImage.src = data.imageUrl; // Supondo que a função Lambda retorne a URL da imagem
-      input.value = '';
-      searchPokemon = data.id;
-    } else {
-      pokemonImage.style.display = 'none';
-      pokemonName.innerHTML = 'Not found :c';
-      pokemonNumber.innerHTML = '';
-    }
-  } catch (error) {
-    console.error(error);
-    // Exibir mensagem de erro para o usuário
+  if (data) {
+    pokemonImage.style.display = 'block';
+    pokemonName.innerHTML = data.name;
+    pokemonNumber.innerHTML = data.id;
+    pokemonImage.src = data.imageUrl; // Supondo que a função Lambda retorne a URL da imagem
+    input.value = '';
+    searchPokemon = data.id;
+  } else {
+    pokemonImage.style.display = 'none';
+    pokemonName.innerHTML = 'Not found :c';
+    pokemonNumber.innerHTML = '';
   }
 };
 
@@ -69,4 +68,5 @@ buttonNext.addEventListener('click', () => {
   renderPokemon(searchPokemon);
 });
 
-renderPokemon(searchPokemon); 1 
+// Inicializa a página com o primeiro Pokémon
+renderPokemon(searchPokemon);
